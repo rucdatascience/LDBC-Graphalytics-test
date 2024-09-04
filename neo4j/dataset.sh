@@ -1,0 +1,2 @@
+# Set the graph data to be tested
+dataset=("datagen-9_2-zf" "datagen-9_0-fb" "graph500-26" "datagen-9_3-zf" "datagen-9_1-fb" "com-friendster" "twitter_mpi" "graph500-27" "datagen-9_4-fb" "datagen-sf3k-fb")
