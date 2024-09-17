@@ -120,7 +120,9 @@
     > 系统内存参考：`free -g`              
     >
     > total,used,free,shared,buff/cache,available
+    >
     > Mem,1007,132,228,3,646,869
+    >
     > Swap,0,0,0
 
     ```cmd
