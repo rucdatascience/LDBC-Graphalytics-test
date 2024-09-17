@@ -1,36 +1,48 @@
-var store = false   // whether store into database
+// Write via Pregel.
+const pregel = require("@arangodb/pregel");
+// Whether store into database.
+const store = false;
 
-var pregel = require("@arangodb/pregel");
+const algorithm = "pagerank";
+const g_name = "graph_name";
+const output_name = "output/" + g_name + "-PR-ArangoDB.txt";
 
+const result_field = "score";
+
+console.log(algorithm + " is running...");
 if(!store) {
-    var handle = pregel.start("pagerank", "graph_name", {maxGSS: pr_it, store: false});
+    // Change
+    var handle = pregel.start(algorithm, g_name, {maxGSS: pr_it, store: false});
     var cnt = 0;
     while (!["done", "canceled"].includes(pregel.status(handle).state)) {
         cnt++;
-        console.log(`wait for result:${cnt}s`)
+        if (cnt % 10 == 0) {
+            console.log(`wait for `+ algorithm + ` result:${cnt}s`);
+        }
         require("internal").wait(1);
     }
     var status = pregel.status(handle);
-    print(status);
-    //store as file (convenient for validation)
+    // Change
+    console.log("PR computationTime: " + status.computationTime + " seconds");
+    //Store as a file, which is convenient for validation.
     const fs = require('fs')
     if (status.state == "done") {
         var query = db._query("FOR doc IN PREGEL_RESULT(@handle) RETURN doc", {handle: handle});
-        // transfer to string
         var jsonStringArray = query.toArray().map(JSON.stringify);
-        var output_name = "graph_name"+"-PR-Arangodb.txt"
         fs.writeFileSync(output_name, jsonStringArray.join('\n'));
     }
-}
-
-if(store) {
-    var handle = pregel.start("pagerank", "graph_name", { maxGSS: pr_it, resultField: "score" });
+} else {
+    // Change
+    var handle = pregel.start(algorithm, g_name , { maxGSS: pr_it, resultField: result_field });
     var cnt = 0;
     while (!["done", "canceled"].includes(pregel.status(handle).state)) {
         cnt++;
-        console.log(`wait for result:${cnt}s`)
+        if (cnt % 10 == 0) {
+            console.log(`wait for `+ algorithm + ` result:${cnt}s`);
+        }
         require("internal").wait(1);
     }
     var status = pregel.status(handle);
-    print(status);
+    // Change
+    console.log("PR computationTime: " + status.computationTime + " seconds");
 }

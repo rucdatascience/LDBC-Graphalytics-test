@@ -4,7 +4,6 @@ source dataset.sh
 echo "===================================== START ========================================" >> benchmark.log
 for graph in "${dataset[@]}"; do
     echo "Testing graph: $graph" >> benchmark.log
-    # 设置当前图名称
     graph_name="$graph"
     source read_properties.sh >> benchmark.log
     source clear.sh

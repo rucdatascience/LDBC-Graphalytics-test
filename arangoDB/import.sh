@@ -15,133 +15,127 @@ echo | sed -e 's/.*/_to _from/' > "$title_e_unweighted_reverse"
 
 if $weighted; then {
     if $directed; then {
-# import nodes
-arangoimport \
---file ${DATA_HOME}/${graph_name}.v \
---type tsv \
---headers-file ${title_v} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_v \
---create-collection true \
---create-collection-type document \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.v \
+        --type tsv \
+        --headers-file ${title_v} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_v \
+        --create-collection true \
+        --create-collection-type document \
+        --server.password ${PASSWORD}
 
-# import edges
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_weighted} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_weighted} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
     } else {
-# import nodes
-arangoimport \
---file ${DATA_HOME}/${graph_name}.v \
---type tsv \
---headers-file ${title_v} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_v \
---create-collection true \
---create-collection-type document \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.v \
+        --type tsv \
+        --headers-file ${title_v} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_v \
+        --create-collection true \
+        --create-collection-type document \
+        --server.password ${PASSWORD}
 
-# import edges
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_weighted} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_weighted} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
 
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_weighted_reverse} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        # 导入反向边
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_weighted_reverse} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
     }
     fi
 } else {
     if $directed; then {
-arangoimport \
---file ${DATA_HOME}/${graph_name}.v \
---type tsv \
---headers-file ${title_v} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_v \
---create-collection true \
---create-collection-type document \
---server.password ${PASSWORD}
-
-# import edges
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_unweighted} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.v \
+        --type tsv \
+        --headers-file ${title_v} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_v \
+        --create-collection true \
+        --create-collection-type document \
+        --server.password ${PASSWORD}
+ 
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_unweighted} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
     } else {
-# import nodes
-arangoimport \
---file ${DATA_HOME}/${graph_name}.v \
---type tsv \
---headers-file ${title_v}\
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_v \
---create-collection true \
---create-collection-type document \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.v \
+        --type tsv \
+        --headers-file ${title_v}\
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_v \
+        --create-collection true \
+        --create-collection-type document \
+        --server.password ${PASSWORD}
 
-# import edges
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_unweighted} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_unweighted} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
 
-arangoimport \
---file ${DATA_HOME}/${graph_name}.e \
---type tsv \
---headers-file ${title_e_unweighted_reverse} \
---server.database ${DATABASE_NAME} \
---collection ${graph_name}_e \
---create-collection true \
---create-collection-type edge \
---from-collection-prefix ${graph_name}_v \
---to-collection-prefix ${graph_name}_v \
---separator ' ' \
---server.password ${PASSWORD}
+        arangoimport \
+        --file ${DATA_HOME}/${graph_name}.e \
+        --type tsv \
+        --headers-file ${title_e_unweighted_reverse} \
+        --server.database ${DATABASE_NAME} \
+        --collection ${graph_name}_e \
+        --create-collection true \
+        --create-collection-type edge \
+        --from-collection-prefix ${graph_name}_v \
+        --to-collection-prefix ${graph_name}_v \
+        --separator ' ' \
+        --server.password ${PASSWORD}
     }
     fi
 }

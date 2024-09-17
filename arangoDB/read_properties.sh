@@ -12,21 +12,22 @@ if [ $directed_str == "true" ]; then {
     directed=false
 }
 fi
-bfs_id=$(grep "bfs\.source-vertex =" ${properties_file} | cut -d '=' -f 2)
-cdlp_max_it=$(grep "cdlp\.max-iterations =" ${properties_file} | cut -d '=' -f 2)
-pr_df=$(grep "pr\.damping-factor =" ${properties_file} | cut -d '=' -f 2)
-pr_it=$(grep "pr\.num-iterations =" ${properties_file} | cut -d '=' -f 2)
+bfs_id=$(grep "bfs\.source-vertex =" ${properties_file} | cut -d '=' -f 2 | tr -d '[:space:]')
+cdlp_max_it=$(grep "cdlp\.max-iterations =" ${properties_file} | cut -d '=' -f 2 | tr -d '[:space:]')
+pr_df=$(grep "pr\.damping-factor =" ${properties_file} | cut -d '=' -f 2 | tr -d '[:space:]')
+pr_it=$(grep "pr\.num-iterations =" ${properties_file} | cut -d '=' -f 2 | tr -d '[:space:]')
 if $weighted; then {
-    sssp_id=$(grep "sssp\.source-vertex =" ${properties_file} | cut -d '=' -f 2)
+    sssp_id=$(grep "sssp\.source-vertex =" ${properties_file} | cut -d '=' -f 2 | tr -d '[:space:]')
 }
 fi
+echo "weighted: $weighted"
+echo "directed: $directed"
 echo "bfs_id: $bfs_id"
 echo "cdlp_max_it: $cdlp_max_it"
-echo "pr_df: $pr_df"
-echo "pr_it: $pr_it"
+echo "pr_df: $pr_df pr_it: $pr_it"
 if $weighted; then {
     echo "sssp_id: $sssp_id"
 } else {
-    echo "Doesn't support SSSP algorithm."
+    echo "This graph doesn't support SSSP algorithm."
 }
 fi

@@ -1,5 +1,6 @@
 # LDBC-Graphalytics-test
-# 测试环境准备
+
+## 测试环境准备
 
 ### 测试平台
 
@@ -38,7 +39,7 @@
 
 8. 待确定下载完毕后，终端输入`screen -X -S download_data quit`，可以清除页面，可以通过`screen -ls`验证是否成功清除。
 
-# Neo4j测试
+## Neo4j测试
 
 ### 软件安装
 
@@ -145,12 +146,14 @@
 
 ### 如何执行测试
 
+> 此处若需要脱离登录状态时也能执行，可以仿照下载数据时的方式使用`screen`指令。
+
 1. 在测试脚本中的`neo4j/config.sh`中写入实际的`DATA_HOME`、`NEO4J_HOME`、`LOG_FILE`，第一个路径为LDBC数据存放的目录，第二个路径为Neo4j数据库的根目录，第三个路径为Neo4j的debug.log的路径。
 2. 在`neo4j/dataset.sh`中设置需要测试的图的名称，注意要用引号包围，且不同图名称之间以空格间隔。
 3. 在测试脚本目录下执行`chmod +x *.sh`，使得所有脚本有可执行权限。
 4. 在测试脚本目录下执行`./main.sh`，即可开始测试。
-5. 在测试脚本运行过程中，可以打开`LOG_FILE`监测算法执行进度，也可以打开`benchmark.log`查看每个图数据的各个算法的实际执行时间。
-6. 最终耗时结果保存在`benchmark.log`中，可供查看。
+5. 在测试脚本运行过程中，可以打开`LOG_FILE`监测算法实际执行进度，也可以打开`neo4j/benchmark.log`查看每个图数据的各个算法的实际执行时间。
+6. 最终耗时结果保存在`neo4j/benchmark.log`中，可供查看。
 
 ### 测试补充说明
 
@@ -167,7 +170,7 @@
    `LDBC`：https://arxiv.org/pdf/2011.15028 `Page 14~15 of 43`
 
    `Neo4j`：https://neo4j.com/docs/graph-data-science/2.8/algorithms/label-propagation/
-   
+
 3. `PageRank`：有向图和无向图上均无法满足`LDBC`要求的分数近似相等，但是页面的排名是一致的，即按照得分大小排序后，每个位次的节点一致，也是因为`Neo4j`的计算公式略有不同。
 
    `LDBC`：https://arxiv.org/pdf/2011.15028 `Page 14 of 43`
@@ -196,7 +199,7 @@
 * 选择`Neo4j GDS`中算法的`stream`执行模式，避免更新原来的图数据耗时，同时可以导出结果至文件系统，便于直接查看算法执行结果。
 * 选择查看`log`文件，计算时间戳之差的方式统计算子实际执行时间，排除了数据库返回结果所需时间，也没有依赖`Neo4j`本身返回算法执行时间的函数，测试更为准确。
 
-# ArangoDB测试
+## ArangoDB测试
 
 ### 软件安装
 
@@ -208,20 +211,74 @@ sudo curl -OL https://download.arangodb.com/arangodb312/RPM/arangodb.repo
 sudo yum -y install arangodb3-3.11.10-1.1
 ```
 
-安装期间会需要输入密码，原始密码在安装的提示信息中会被给出。这里可以随意输入新密码，建议直接以`root`作为密码。
+安装期间会需要设置登录密码，原始密码在安装的提示信息中会被给出。这里可以随意输入新密码，建议直接以`root`作为密码。
 
 ### 修改配置
 
-1. 输入`arangod`，直接启动数据库，会提示需要修改的配置，以达到较好性能。
+1. 输入`arangod`，直接启动数据库，会提示需要修改的配置，以达到较好性能, 根据要求输入指令进行配置的修改。
 
-2. 关闭终端，`ArangoDB`也会随之关闭。
+2. 关闭执行`arangod`指令的终端，`ArangoDB`也随之关闭， 后续我们将改用 `systemctl` 进行数据库的启动。
 
 ### 开始测试
 
-1. `sudo systemctl start arangodb3`，启动数据库。
+> 此处若需要脱离登录状态时也能执行，可以仿照下载数据时的方式使用`screen`指令。
+> 由于`SSSP`算子执行过于缓慢，默认将`arangoDB/run_test.sh`中有关`SSSP`测试的部分注释掉了，如需尝试测试，可取消注释。
+
+1. `sudo systemctl start arangodb3`，启动`ArangoDB`。
 2. 创建一个空的数据库：
    * 输入`arangosh`。
-   * 输入`db._createDatabase("newDB");`其中`newDB`是要创建数据库的名字。
+   * 输入`db._createDatabase("rucgraph");`其中`rucgraph`是要创建数据库的名字。
    * 输入`exit`退出。
-3. 在测试脚本中的`arangoDB/config.sh`中配置好`LDBC`图数据所在的目录，创建的数据库名称，密码等信息。
-4. 执行`./main.sh`。
+3. 在测试脚本中的`arangoDB/config.sh`中配置好`LDBC`图数据所在的目录，创建的数据库名称，密码，若前面使用的是`rucgraph`作为数据库名，`root`作为密码，则不需要修改这两项。
+4. 在`arangoDB/dataset.sh`中修改给定需要测试的图名称列表，注意格式。
+5. 在测试脚本目录下执行`chmod +x *.sh`，使得所有脚本有可执行权限。
+6. 在测试脚本目录下执行`./main.sh`即可开始测试。
+7. 测试过程中可以查看`arangoDB/benchmark.log`的变化，最终测试结果存放在此文件中。
+
+### 测试补充说明
+
+#### 测试中可能遇见的问题及解决方案
+
+1. 可能遇到`SSSP`算法`request`请求超时，此时无法正确结束`SSSP`算法执行的问题。
+   * 解决方案：
+     * 执行`top`指令，查看`arangod`对应的`pid`；
+     * 执行`kill -15 对应的pid`，关闭进程，并允许进程进行清理，防止数据不一致等问题。
+2. 可能遇到导入图数据时中断了程序执行，导致再次测试同一张图的点与边的时候产生数据重复导入的错误。
+   * 解决方案：
+     * 打开`ArangoDB`的WebUI，默认地址为`localhost:8529`，登陆账户，选择对应的数据库，点击左侧的`collections`删除对应的集合即可；
+     * 如果是图重复创建，那么点击左侧的`graphs`，删除对应的图即可（注意勾选同时删除包含的集合）。
+
+#### 正确性验证
+
+1. `BFS`：满足`LDBC`要求的精确匹配正确性验证。
+
+2. `CDLP`：在有向图上不正确，在无向图上只能映射相等，而`LDBC`要求完全一致。查阅资料推测是因为`ArangoDB`在标签扩散前进行频率计算时没有考虑出边，只考虑了入边；而`LDBC`文档算法介绍将出边和入边算作两次。
+
+   `LDBC`：https://arxiv.org/pdf/2011.15028 `Page 14~15 of 43`
+
+   `ArangoDB`：https://docs.arangodb.com/3.11/data-science/pregel/algorithms/#label-propagation
+
+3. `PageRank`：结果差异很大。应当也是计算公式不一样的缘故。
+
+   `LDBC`：https://arxiv.org/pdf/2011.15028 `Page 14 of 43`
+
+   `ArangoDB`：https://docs.arangodb.com/3.11/data-science/pregel/algorithms/#pagerank
+
+4. `WCC`：满足`LDBC`要求的一一对应正确性验证。
+
+5. `SSSP`：满足`LDBC`要求的近似相等正确性验证，但是算子执行速度过慢，只在小图上进行了测试。
+
+#### 执行算法选取
+
+`ArangoDB`可选图算子执行方案有：
+
+1. 自行编写`AQL`语句。
+2. 使用自带的`Pregel API`执行各种分布式图算子。
+3. 使用`Graph Analytics`执行各种图算子（3.11版本不支持单服务器部署，详见 https://docs.arangodb.com/3.11/data-science/graph-analytics/#workflow）。
+
+由于`3`不适用于待测试版本，且`1`性能较差，所以我们尽量采用`2`进行测试。但是由于`ArangoDB`的`Pregel API`并不直接支持`BFS`与带权的`SSSP`，因此这两种算子分别采用`AQL`语句中的`order: "bfs"`与`SHORTEST_PATH`进行执行。结果表示：其中`BFS`的性能能够忍受，而`SSSP`仅能在很小的测试图上在合理时间（30min）内得到结果，`kgs`这种`XS`大小的图就无法在合理时间内得到结果。
+
+#### 测试方案选择
+
+1. 对于`AQL`语句的算子执行，我们使用`db._query(query).getExtra().stats.executionTime`获取算子实际的计算时间（排除导入图等过程的时间）。
+2. 对于`Pregel API`的算子执行，我们使用`pregel.status(handle).computationTime`获取算子实际的计算时间。
